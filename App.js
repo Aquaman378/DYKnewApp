@@ -1,46 +1,53 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, TextInput, Button, Alert, SafeAreaView, Seperator, FlatList } from 'react-native';
+import { StyleSheet, Text, TextInput, Button, SafeAreaView, FlatList, View } from 'react-native';
 import { useState } from 'react';
 
-//Will be a todo list but change name of app
-const initialData = [
-  
-];
-
 export default function App() {
-  const [data, setData] = useState(initialData);
+  const [data, setData] = useState([]);
   const [inputValue, setInputValue] = useState('');
 
   const addToList = () => {
     if (inputValue.trim() === '') return;
-    setData([...data, { id: (data.length + 1), title: inputValue }]);
+    setData([...data, { id: data.length + 1, title: inputValue }]);
     setInputValue('');
   };
 
+  //const removeItem = (id) => {
+    //const updatedList = data.filter((item) => item.id !== id);
+    //setData(updatedList);
+  //};
+
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Welcome to Your To Do List</Text>
+      <View style={styles.topBackground}>
+        <Text style={styles.title}>Your To-Do List</Text>
+      </View>
+
       <TextInput
         style={styles.input}
-        placeholder="Type here"
+        placeholder="Add a new task"
         value={inputValue}
         onChangeText={setInputValue}
       />
+
+      <Button title="Add to List" onPress={addToList} />
+
+      <View style={styles.list}>
+        <FlatList
+          data={data}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <View style={styles.taskContainer}>
+              <Text style={styles.taskText}>\
+                {item.title}
+                </Text>
+                <Button title="Delete" />
+            </View>
+          )}
+        />
+      </View>
+
       <StatusBar style="auto" />
-
-      <Button
-        title="Add to List"
-        onPress={addToList}
-      />
-
-      <FlatList
-        style={{ marginTop: 20, width: '100%', alignContent: 'flex-end', borderColor: 'black' }}
-        data={data}
-        keyExtractor={item => item.id}
-        renderItem={({ item }) => (
-          <Text>{item.title}</Text>
-        )}
-      />
     </SafeAreaView>
   );
 }
@@ -50,21 +57,53 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
     padding: 20,
+    paddingTop: 50,
   },
   title: {
-    fontSize: 18,
-    marginBottom: 10,
-    flexDirection: 'row',
-    
+    fontSize: 24,
+    fontWeight: 'bold',
+    alignItems: 'center',
+    shadowColor: "blue",
+    shadowOpacity: 1.8,
+    shadowOffset: { width: 2, height: 2 },
+    marginBottom: 20,
+    padding: 20,
+  },
+  topBackground: {
+    backgroundColor: '#ADD8E6',
+    width: '100%',
+    alignItems: 'center',
+    borderRadius: 8,
+    marginBottom: 20,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#999',
+    borderColor: '#ccc',
     padding: 10,
-    width: '80%',
-    marginBottom: 20,
-    borderRadius: 5,
+    width: '100%',
+    marginBottom: 10,
+    borderRadius: 8,
+  },
+  list: {
+    marginTop: 20,
+    alignItems: 'center',
+    width: '100%',
+  },
+  taskContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#f9f9f9',
+    padding: 15,
+    borderRadius: 8,
+    marginBottom: 10,
+    borderWidth: 2,
+    borderColor: '#333',
+    width: '100%',
+  },
+  taskText: {
+    fontSize: 18,
+    flexShrink: 0.5,
   },
 });
