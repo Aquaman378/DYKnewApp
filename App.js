@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, TextInput, Button, SafeAreaView, FlatList, View } from 'react-native';
+import { StyleSheet, Text, TextInput, Button, SafeAreaView, FlatList, View, Pressable } from 'react-native';
 import { useState } from 'react';
 
 export default function App() {
@@ -12,10 +12,10 @@ export default function App() {
     setInputValue('');
   };
 
-  //const removeItem = (id) => {
-    //const updatedList = data.filter((item) => item.id !== id);
-    //setData(updatedList);
-  //};
+  const removeItem = (id) => {
+    const updatedList = data.filter((item) => item.id !== id);
+    setData(updatedList);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -36,12 +36,14 @@ export default function App() {
         <FlatList
           data={data}
           keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
+          renderItem={( itemData ) => (
             <View style={styles.taskContainer}>
-              <Text style={styles.taskText}>\
-                {item.title}
-                </Text>
-                <Button title="Delete" />
+              <Text style={styles.taskText}>
+                {itemData.item.title}
+              </Text>
+              <Pressable onPress={() => removeItem(itemData.item.id)}>
+                <Text style={{ color: 'red' }}>Delete</Text>
+              </Pressable>
             </View>
           )}
         />
@@ -106,4 +108,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     flexShrink: 0.5,
   },
+  taskDelete: {
+    //color: 'red',
+  }
 });
